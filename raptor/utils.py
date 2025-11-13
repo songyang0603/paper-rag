@@ -7,6 +7,8 @@ import tiktoken
 from scipy import spatial
 
 from .tree_structures import Node
+from nltk.tokenize import sent_tokenize
+import nltk
 
 logging.basicConfig(format="%(asctime)s - %(message)s", level=logging.INFO)
 
@@ -34,10 +36,17 @@ def split_text(
     Returns:
         List[str]: A list of text chunks.
     """
+    # 在split_text函数开头添加（只需运行一次）
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        nltk.download('punkt', quiet=True)
+    
+    sentences = sent_tokenize(text)
     # Split the text into sentences using multiple delimiters
-    delimiters = [".", "!", "?", "\n"]
-    regex_pattern = "|".join(map(re.escape, delimiters))
-    sentences = re.split(regex_pattern, text)
+    #delimiters = [".", "!", "?", "\n"]
+    #regex_pattern = "|".join(map(re.escape, delimiters))
+    #sentences = re.split(regex_pattern, text)
     
     # Calculate the number of tokens for each sentence
     n_tokens = [len(tokenizer.encode(" " + sentence)) for sentence in sentences]
